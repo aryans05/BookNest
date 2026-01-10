@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  booknest-db:
+    image: postgres:16
+    container_name: booknest-postgres
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: booknest
+      POSTGRES_PASSWORD: booknest123
+      POSTGRES_DB: booknest_dev
+    volumes:
+      - booknest_data:/var/lib/postgresql/data
+    networks:
+      - booknest-network
+
+networks:
+  booknest-network:
+
+volumes:
+  booknest_data:
