@@ -1,36 +1,203 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+---
 
-## Getting Started
+# 📁 `frontend/README.md`
 
-First, run the development server:
+```md
+# BookNest Frontend 🌐
 
-```bash
+BookNest frontend is built with **Next.js (App Router)** and consumes APIs from the BookNest backend.
+
+---
+
+## 🚀 Tech Stack
+
+- **Next.js 14+**
+- **React**
+- **TypeScript**
+- **React Query (TanStack Query)**
+- **Tailwind CSS**
+
+---
+
+## 📂 Project Structure
+
+frontend/
+├── app/
+│ ├── page.tsx
+│ ├── category/[slug]/
+│ ├── product/[id]/
+│ └── layout.tsx
+├── components/
+│ ├── Navbar.tsx
+│ ├── ProductCard.tsx
+│ └── SpecsTable.tsx
+├── lib/
+│ └── api/
+│ ├── navigation.ts
+│ └── products.ts
+└── package.json
+
+yaml
+Copy code
+
+---
+
+## ⚙️ Environment Variables
+
+Create `.env.local`:
+
+````env
+NEXT_PUBLIC_API_BASE_URL=http://localhost:4000
+🧩 Install & Run
+bash
+Copy code
+cd frontend
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Frontend runs on:
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+arduino
+Copy code
+http://localhost:3000
+🔄 Data Fetching Strategy
+React Query handles:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Caching
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Pagination
 
-## Learn More
+Refetch on refresh
 
-To learn more about Next.js, take a look at the following resources:
+APIs are abstracted in:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+bash
+Copy code
+lib/api/
+🧭 Navigation Flow
+On app load → fetch navigation headings
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Hover on heading → fetch sub-headings
 
-## Deploy on Vercel
+Click sub-heading → category page
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Category page → paginated products
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Click product → product detail page
+
+🔁 Refresh Behavior
+Refresh triggers:
+
+Product list fetch
+
+Product detail fetch (if on detail page)
+
+Loaders are used where scraping takes time
+
+🚀 Deployment
+Recommended:
+
+Vercel
+
+Set environment variable in Vercel:
+
+ini
+Copy code
+NEXT_PUBLIC_API_BASE_URL=https://your-backend-url
+📌 Notes
+UI is backend-driven
+
+No hardcoded categories or products
+
+Built to scale with backend enhancements
+
+yaml
+Copy code
+
+---
+
+# 📁 Root README – Connecting Frontend & Backend
+
+```md
+# BookNest 📚
+
+BookNest is a full-stack book discovery platform built using:
+
+- **NestJS + Prisma (Backend)**
+- **Next.js + React Query (Frontend)**
+
+---
+
+## 🧠 Architecture Overview
+
+Frontend (Next.js)
+↓ API calls
+Backend (NestJS)
+↓
+Database (PostgreSQL)
+↓
+Web Scraping (Collection Pages)
+
+yaml
+Copy code
+
+---
+
+## 🔗 Connecting Frontend & Backend
+
+### 1. Backend
+Run backend first:
+```bash
+cd backend
+npm run start:dev
+Backend URL:
+
+arduino
+Copy code
+http://localhost:4000
+2. Frontend
+Set API base URL:
+
+env
+Copy code
+NEXT_PUBLIC_API_BASE_URL=http://localhost:4000
+Run frontend:
+
+bash
+Copy code
+cd frontend
+npm run dev
+🔁 Data Flow Example
+Frontend loads navigation
+
+Backend returns headings from DB
+
+If data missing → scrape endpoint triggered
+
+Data stored via Prisma
+
+Frontend re-fetches updated data
+
+🧪 Testing
+Postman collection included
+
+Collection Runner supported
+
+Newman compatible for CI/CD
+
+🚀 Deployment Strategy
+Backend → Railway / Render
+
+Frontend → Vercel
+
+Update frontend env with backend URL
+
+🔒 Project Status
+Core backend: ✅ Complete
+
+Frontend integration: ✅ Complete
+
+Scraping logic: ✅ Locked
+
+Ready for optimization & deployment
+
+````

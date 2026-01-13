@@ -1,12 +1,13 @@
-import { Module } from '@nestjs/common';
-import { ScrapeController } from './scrape.controller';
+import { Module, forwardRef } from '@nestjs/common';
 import { ScrapeService } from './scrape.service';
-import { PrismaModule } from '../prisma/prisma.module';
+import { ScrapeController } from './scrape.controller';
 import { ScraperOrchestratorService } from '../scraper/scraper-orchestrator.service';
+import { ProductModule } from '../product/product.module';
 
 @Module({
-  imports: [PrismaModule],
+  imports: [forwardRef(() => ProductModule)],
   controllers: [ScrapeController],
   providers: [ScrapeService, ScraperOrchestratorService],
+  exports: [ScraperOrchestratorService],
 })
 export class ScrapeModule {}

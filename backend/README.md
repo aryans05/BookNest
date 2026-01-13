@@ -1,31 +1,119 @@
-# BookNest Backend
+📁 backend/README.md
 
-## Description
+# BookNest Backend 🛠️
 
-Backend service for managing products scraped from external sources,
-structured using Navigation, Category, and Product modules.
+BookNest backend is built using **NestJS** with **Prisma ORM** and is responsible for:
 
-## Tech Stack
+- Scraping book data
+- Managing navigation, categories, and products
+- Serving APIs consumed by the frontend
 
-- NestJS
-- Prisma ORM
-- PostgreSQL
+---
 
-## Modules
+## 🚀 Tech Stack
 
-- Navigation
-- Category
-- Product
+- **NestJS**
+- **Prisma ORM**
+- **PostgreSQL**
+- **Axios / Cheerio (Scraping)**
+- **Postman (API testing)**
 
-## Setup Instructions
+---
 
-1. npm install
-2. Create .env file and set DATABASE_URL
-3. npx prisma migrate dev
-4. npm run start:dev
+## 📂 Project Structure
 
-## API Endpoints
+backend/
+├── prisma/
+│ └── schema.prisma
+├── src/
+│ ├── navigation/
+│ ├── category/
+│ ├── product/
+│ ├── app.module.ts
+│ └── main.ts
+├── .env
+└── package.json
 
-- /navigations
-- /categories
-- /products
+---
+
+## ⚙️ Environment Variables
+
+Create a `.env` file:
+
+```env
+DATABASE_URL="postgresql://USER:PASSWORD@localhost:5432/booknest"
+PORT=4000
+
+🧩 Install & Run
+cd backend
+npm install
+npx prisma generate
+npx prisma migrate dev
+npm run start:dev
+
+
+Server runs on:
+
+http://localhost:4000
+
+📡 API Modules
+Navigation
+
+POST /navigation/scrape
+
+GET /navigation
+
+Categories
+
+POST /categories/scrape
+
+GET /categories/sub-headings
+
+GET /categories/:slug
+
+Products
+
+POST /products/scrape
+
+GET /products/category/:categoryId
+
+GET /products/:id
+
+🧪 API Testing
+
+Postman collection included in /postman
+
+Supports Collection Runner
+
+Tests are saved at request / folder / collection level
+
+🔒 Important Design Decisions (Locked)
+
+Scraping is done from collection pages, not navbar
+
+Prisma schema is finalized
+
+ProductController & ProductService logic is fixed
+
+Limits aligned for product list and detail
+
+🚀 Deployment
+
+Recommended platforms:
+
+Railway
+
+Render
+
+Fly.io
+
+After deployment, update frontend API base URL.
+```
+
+📌 Notes
+
+This backend is designed to be stateless
+
+Scraping endpoints can be triggered manually or via refresh
+
+Ready for background jobs & caching if needed

@@ -6,6 +6,8 @@ import {
   Param,
   Patch,
   Post,
+  BadRequestException,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { Prisma } from '@prisma/client';
@@ -14,33 +16,60 @@ import { Prisma } from '@prisma/client';
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
-  // CREATE
+  @Get('slug/:slug')
+  findBySlug(@Param('slug') slug: string) {
+    return this.categoryService.findBySlug(slug);
+  }
+
+  @Get('by-navigation/:navigationId')
+  findByNavigation(@Param('navigationId', ParseIntPipe) navigationId: number) {
+    return this.categoryService.findByNavigation(navigationId);
+  }
+
+  @Post('scrape/:navigationId')
+  scrapeByNavigation(
+    @Param('navigationId', ParseIntPipe) navigationId: number,
+  ) {
+    return this.categoryService.scrapeAndSaveCategories(navigationId);
+  }
+
+  @Post('scrape/by-url/:navigationId')
+  scrapeByUrl(
+    @Param('navigationId', ParseIntPipe) navigationId: number,
+    @Body('url') url: string,
+  ) {
+    if (!url) {
+      throw new BadRequestException('url is required');
+    }
+
+    return this.categoryService.scrapeAndSaveFromUrl(navigationId, url);
+  }
+
   @Post()
   create(@Body() data: Prisma.CategoryCreateInput) {
     return this.categoryService.create(data);
   }
 
-  // READ ALL
   @Get()
   findAll() {
     return this.categoryService.findAll();
   }
 
-  // READ ONE
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.categoryService.findOne(Number(id));
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.categoryService.findOne(id);
   }
 
-  // UPDATE
   @Patch(':id')
-  update(@Param('id') id: string, @Body() data: Prisma.CategoryUpdateInput) {
-    return this.categoryService.update(Number(id), data);
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() data: Prisma.CategoryUpdateInput,
+  ) {
+    return this.categoryService.update(id, data);
   }
 
-  // DELETE
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.categoryService.remove(Number(id));
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.categoryService.remove(id);
   }
 }

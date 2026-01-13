@@ -1,49 +1,52 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { Prisma } from '@prisma/client';
+import { scrapeTopNavigation } from '../scraper/navigation.scraper';
 
 @Injectable()
 export class NavigationService {
+  private readonly logger = new Logger(NavigationService.name);
+
   constructor(private readonly prisma: PrismaService) {}
 
-  // CREATE
-  create(data: Prisma.NavigationCreateInput) {
-    return this.prisma.navigation.create({
-      data,
-    });
-  }
-
-  // READ ALL
   findAll() {
     return this.prisma.navigation.findMany({
-      include: {
-        categories: true,
+      orderBy: { id: 'asc' },
+      select: {
+        id: true,
+        title: true,
+        slug: true,
+        lastScrapedAt: true,
       },
     });
   }
 
-  // READ ONE
-  findOne(id: number) {
-    return this.prisma.navigation.findUnique({
-      where: { id },
-      include: {
-        categories: true,
-      },
-    });
-  }
+  async scrapeAndSaveNavigation() {
+    const items = await scrapeTopNavigation();
 
-  // UPDATE
-  update(id: number, data: Prisma.NavigationUpdateInput) {
-    return this.prisma.navigation.update({
-      where: { id },
-      data,
-    });
-  }
+    let saved = 0;
 
-  // DELETE
-  remove(id: number) {
-    return this.prisma.navigation.delete({
-      where: { id },
-    });
+    for (const item of items) {
+      await this.prisma.navigation.upsert({
+        where: { slug: item.slug },
+        update: {
+          title: item.title,
+          lastScrapedAt: new Date(),
+        },
+        create: {
+          title: item.title,
+          slug: item.slug,
+          lastScrapedAt: new Date(),
+        },
+      });
+
+      saved++;
+    }
+
+    this.logger.log(`Navigation scraped. Saved: ${saved}`);
+
+    return {
+      message: 'ONLY main navigation headings scraped successfully',
+      saved,
+    };
   }
 }
